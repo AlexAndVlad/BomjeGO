@@ -15,7 +15,7 @@ public class WildBomjeDbContract {
     static final class WildBomjeDb implements WildBomjeColumns {
         static final String TABLE = "wild_bomje";
 
-        static final String CREATE_TABLE = "CREATE TABLE" + TABLE
+        static final String CREATE_TABLE = "CREATE TABLE " + TABLE
                 + " ("
                 + _ID + " INTEGER PRIMARY KEY, "
                 + BOMJE_TYPE + " INTEGER, "
