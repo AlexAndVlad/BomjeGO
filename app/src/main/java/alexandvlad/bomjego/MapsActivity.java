@@ -85,13 +85,20 @@ public class MapsActivity extends FragmentActivity implements
         super.onStop();
     }
 
+    private static int getRandomNumberInRange(int min, int max) {
+        if (min >= max) {
+            throw new IllegalArgumentException("max must be greater than min");
+        }
+        Random r = new Random();
+        return r.nextInt((max - min) + 1) + min;
+    }
+
     public void addBomje(View view) {
         Location temp = new Location(LocationManager.GPS_PROVIDER);
         Random r = new Random();
         temp.setLatitude(r.nextDouble() * 90);
         temp.setLongitude(r.nextDouble() * 180);
-
-        Bomje bomje = new Bomje(BomjeType.NORMAL, 10, 10);
+        Bomje bomje = new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 3)), 10, 10);
         try {
             bomjeDb.put(new WildBomjeEntry(bomje, temp));
         } catch (BomjeDbException e) {
@@ -103,14 +110,31 @@ public class MapsActivity extends FragmentActivity implements
     private void drawBomjes() {
         List<WildBomjeEntry> wildBomjes = bomjeDb.getAll();
         for(WildBomjeEntry i : wildBomjes) {
-            final Marker a = googleMap.addMarker(new MarkerOptions()
+            final Marker a;
+            if(i.bomje.type.equals(BomjeType.NORMAL)) {
+                a = googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(i.location.getLatitude(), i.location.getLongitude()))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje1))
+                );
+            } else if(i.bomje.type.equals(BomjeType.WITH_BOX)){
+                a = googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(i.location.getLatitude(), i.location.getLongitude()))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje2))
+                );
+            } else if(i.bomje.type.equals(BomjeType.RAIL_STATION)){
+                 a = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(i.location.getLatitude(), i.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje1))
-            );
-
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje3))
+                );
+            } else if(i.bomje.type.equals(BomjeType.PARK)){
+                a = googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(i.location.getLatitude(), i.location.getLongitude()))
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje4))
+                );
+            }
             googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                  @Override public boolean onMarkerClick(Marker marker) {
-                     marker.setVisible(false);
+                     marker.remove();
                      return true;
                  }
 
