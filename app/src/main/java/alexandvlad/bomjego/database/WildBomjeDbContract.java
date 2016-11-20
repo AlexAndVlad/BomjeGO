@@ -9,7 +9,7 @@ public class WildBomjeDbContract {
     private interface WildBomjeColumns extends BaseColumns, BomjeContract.BomjeColumns {
         String LATITUDE = "latitude";
         String LONGITUDE = "longitude";
-        String[] ALL = {BOMJE_TYPE, WIDTH, HEIGHT, LATITUDE, LONGITUDE};
+        String[] ALL = {_ID, BOMJE_TYPE, WIDTH, HEIGHT, LATITUDE, LONGITUDE};
     }
 
     static final class WildBomjeDb implements WildBomjeColumns {

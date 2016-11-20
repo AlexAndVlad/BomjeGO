@@ -13,12 +13,20 @@
           android:layout_height="match_parent"
           tools:context="alexandvlad.bomjego.MapsActivity"/>
 
-    <Button
-        android:text="ADD BOMJE"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/button3"
-        android:onClick="addBomje"/>
+        android:layout_height="wrap_content">
+        <Button
+            android:text="ADD BOMJE"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button3"
+            android:onClick="addBomje"/>
+
+    </LinearLayout>
+
+
 
 
 </FrameLayout>

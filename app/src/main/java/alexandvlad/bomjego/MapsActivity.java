@@ -35,6 +35,7 @@ import alexandvlad.bomjego.model.Bomje;
 import alexandvlad.bomjego.model.BomjeType;
 import alexandvlad.bomjego.model.WildBomjeEntry;
 
+import static android.R.attr.id;
 import static com.google.android.gms.location.LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
 
 public class MapsActivity extends FragmentActivity implements
@@ -93,16 +94,22 @@ public class MapsActivity extends FragmentActivity implements
         return r.nextInt((max - min) + 1) + min;
     }
 
+    private int id = 0;
     public void addBomje(View view) {
         Location temp = new Location(LocationManager.GPS_PROVIDER);
         Random r = new Random();
         temp.setLatitude(r.nextDouble() * 90);
         temp.setLongitude(r.nextDouble() * 180);
+
         Bomje bomje = new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 3)), 10, 10);
-        try {
-            bomjeDb.put(new WildBomjeEntry(bomje, temp));
-        } catch (BomjeDbException e) {
-            Log.wtf(TAG, e);
+        boolean f = true;
+        while (f) {
+            WildBomjeEntry wildBomje = new WildBomjeEntry(id++, bomje, temp);
+            try {
+                bomjeDb.put(wildBomje);
+                f = false;
+            } catch (BomjeDbException ignored) {
+            }
         }
         drawBomjes();
     }
@@ -110,7 +117,7 @@ public class MapsActivity extends FragmentActivity implements
     private void drawBomjes() {
         List<WildBomjeEntry> wildBomjes = bomjeDb.getAll();
         for(WildBomjeEntry i : wildBomjes) {
-            final Marker a;
+            Marker a = null;
             if(i.bomje.type.equals(BomjeType.NORMAL)) {
                 a = googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(i.location.getLatitude(), i.location.getLongitude()))
@@ -132,8 +139,14 @@ public class MapsActivity extends FragmentActivity implements
                         .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje4))
                 );
             }
+            if (a != null) {
+                a.setTag(i);
+            }
+
             googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                  @Override public boolean onMarkerClick(Marker marker) {
+                     Log.d(TAG, "YEAH!");
+                     bomjeDb.delete((WildBomjeEntry) marker.getTag());
                      marker.remove();
                      return true;
                  }

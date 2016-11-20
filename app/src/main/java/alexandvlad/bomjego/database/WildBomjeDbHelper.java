@@ -11,7 +11,7 @@ class WildBomjeDbHelper extends SQLiteOpenHelper {
 
     private static final String DB_FILE_NAME = "wild_bomje.db";
 
-    private static final int DB_VERSION = 1;
+    private static final int DB_VERSION = 3;
 
     private static volatile WildBomjeDbHelper instance;
 

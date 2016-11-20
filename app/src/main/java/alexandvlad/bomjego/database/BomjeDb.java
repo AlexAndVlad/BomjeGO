@@ -21,7 +21,9 @@ import alexandvlad.bomjego.model.Bomje;
 import alexandvlad.bomjego.model.BomjeType;
 import alexandvlad.bomjego.model.WildBomjeEntry;
 
+import static android.R.attr.id;
 import static android.R.attr.version;
+import static android.os.Build.ID;
 
 public class BomjeDb {
 
@@ -37,6 +39,7 @@ public class BomjeDb {
         SQLiteDatabase db = WildBomjeDbHelper.getInstance(context).getWritableDatabase();
 
         ContentValues values = new ContentValues();
+        values.put(WildBomjeDbContract.WildBomjeDb._ID, entry.id);
         values.put(WildBomjeDbContract.WildBomjeDb.BOMJE_TYPE, entry.bomje.type.getValue());
         values.put(WildBomjeDbContract.WildBomjeDb.WIDTH, entry.bomje.wight);
         values.put(WildBomjeDbContract.WildBomjeDb.HEIGHT, entry.bomje.height);
@@ -65,6 +68,7 @@ public class BomjeDb {
             if (cursor != null && cursor.moveToFirst()) {
                 for (; !cursor.isAfterLast(); cursor.moveToNext()) {
                     int i = 0;
+                    int id = cursor.getInt(i++);
                     BomjeType type = BomjeType.fromInt(cursor.getInt(i++));
                     int width = cursor.getInt(i++);
                     int height = cursor.getInt(i++);
@@ -73,13 +77,19 @@ public class BomjeDb {
                     Location temp = new Location(LocationManager.GPS_PROVIDER);
                     temp.setLatitude(latitude);
                     temp.setLongitude(longitude);
-                    WildBomjeEntry entry = new WildBomjeEntry(new Bomje(type, width, height), temp);
+                    WildBomjeEntry entry = new WildBomjeEntry(id, new Bomje(type, width, height), temp);
                     wildBomjes.add(entry);
                 }
             }
         }
 
         return wildBomjes;
+    }
+
+    @WorkerThread
+    public void delete(WildBomjeEntry entry) {
+        SQLiteDatabase db = WildBomjeDbHelper.getInstance(context).getWritableDatabase();
+        db.execSQL("DELETE FROM " + WildBomjeDbContract.WildBomjeDb.TABLE + " WHERE " + WildBomjeDbContract.WildBomjeDb._ID + "=" + entry.id);
     }
 
     private static final String TAG = "BomjeDb";
