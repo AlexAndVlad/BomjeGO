@@ -23,6 +23,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.List;
@@ -40,7 +41,8 @@ public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener
+{
 
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
 
@@ -48,6 +50,8 @@ public class MapsActivity extends FragmentActivity implements
     private GoogleApiClient googleApiClient;
     private BomjeDb bomjeDb;
     private LatLng myLatLng;
+
+    Marker marker_1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,9 +103,18 @@ public class MapsActivity extends FragmentActivity implements
     private void drawBomjes() {
         List<WildBomjeEntry> wildBomjes = bomjeDb.getAll();
         for(WildBomjeEntry i : wildBomjes) {
-            googleMap.addMarker(new MarkerOptions()
+            final Marker a = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(i.location.getLatitude(), i.location.getLongitude()))
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje1))
+            );
+
+            googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+                 @Override public boolean onMarkerClick(Marker marker) {
+                     marker.setVisible(false);
+                     return true;
+                 }
+
+             }
             );
         }
     }
@@ -169,22 +182,9 @@ public class MapsActivity extends FragmentActivity implements
     public void onLocationChanged(Location location) {
         //mLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
         LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
-        //googleMap.addMarker(new MarkerOptions().position(currentPosition).title("Marker in Sydney"));
-        //googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
-    /*    CameraPosition cameraPosition = new CameraPosition.Builder()
-                .target(currentPosition)
-                .zoom(18)
-                .tilt(60)
-                .build();*/
 
         myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-        googleMap.addMarker(new MarkerOptions()
-                .position(myLatLng)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje1))
-        );
 
-
-      //  googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     private static final String TAG = "MapActivity";
