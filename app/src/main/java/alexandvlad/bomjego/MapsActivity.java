@@ -4,11 +4,11 @@ import android.Manifest;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
@@ -18,11 +18,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -48,6 +47,7 @@ public class MapsActivity extends FragmentActivity implements
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private BomjeDb bomjeDb;
+    private LatLng myLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -98,20 +98,26 @@ public class MapsActivity extends FragmentActivity implements
 
     private void drawBomjes() {
         List<WildBomjeEntry> wildBomjes = bomjeDb.getAll();
+        for(WildBomjeEntry i : wildBomjes) {
+            googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(i.location.getLatitude(), i.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje1))
+            );
+        }
     }
 
     @SuppressWarnings("MissingPermission")
     private void doStuff() {
         googleMap.setMyLocationEnabled(true);
         googleMap.setBuildingsEnabled(true);
-        googleMap.addMarker(new MarkerOptions()
-                .position(new LatLng(10, 10))
-                .title("Hello world"));
+
         LocationRequest request = new LocationRequest();
         request.setInterval(500);
         request.setFastestInterval(100);
         request.setPriority(PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, this);
+
+        drawBomjes();
     }
 
     @Override
@@ -165,12 +171,20 @@ public class MapsActivity extends FragmentActivity implements
         LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
         //googleMap.addMarker(new MarkerOptions().position(currentPosition).title("Marker in Sydney"));
         //googleMap.moveCamera(CameraUpdateFactory.newLatLng(currentPosition));
-        CameraPosition cameraPosition = new CameraPosition.Builder()
+    /*    CameraPosition cameraPosition = new CameraPosition.Builder()
                 .target(currentPosition)
                 .zoom(18)
                 .tilt(60)
-                .build();
-        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                .build();*/
+
+        myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        googleMap.addMarker(new MarkerOptions()
+                .position(myLatLng)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje1))
+        );
+
+
+      //  googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
     }
 
     private static final String TAG = "MapActivity";
