@@ -18,10 +18,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -50,7 +53,7 @@ public class MapsActivity extends FragmentActivity implements
     private BomjeDb bomjeDb;
     private LatLng myLatLng;
 
-    Marker marker_1;
+    private Location mLastLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +73,8 @@ public class MapsActivity extends FragmentActivity implements
         }
 
         bomjeDb = new BomjeDb(this);
+        //      googleMap.setAllGesturesEnabled(false);
+
     }
 
     @Override
@@ -170,7 +175,6 @@ public class MapsActivity extends FragmentActivity implements
             }
 
         });
-
         drawDbBomjes();
     }
 
@@ -221,11 +225,13 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        //mLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+        googleMap.animateCamera(cameraUpdate);
 
+        googleMap.getUiSettings().setAllGesturesEnabled(false);
+        googleMap.getUiSettings().setRotateGesturesEnabled(true);
         myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-
     }
 
     private static final String TAG = "MapActivity";
