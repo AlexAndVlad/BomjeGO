@@ -112,6 +112,7 @@ public class MapsActivity extends FragmentActivity implements
             }
         }
     }
+    //LUL
 
     private void addBomjeMarker(WildBomjeEntry wildBomje) {
         Marker a = null;
