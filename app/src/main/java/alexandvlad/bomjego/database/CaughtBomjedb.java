@@ -10,56 +10,48 @@ import android.support.annotation.AnyThread;
 import android.support.annotation.NonNull;
 import android.support.annotation.WorkerThread;
 
-import com.google.android.gms.maps.model.LatLng;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import alexandvlad.bomjego.exceptions.BomjeDbException;
 import alexandvlad.bomjego.model.Bomje;
 import alexandvlad.bomjego.model.BomjeType;
 import alexandvlad.bomjego.model.WildBomjeEntry;
 
-import static android.R.attr.id;
-import static android.R.attr.version;
-import static android.os.Build.ID;
-
-public class BomjeDb {
-
+public class CaughtBomjeDb {
     private final Context context;
 
     @AnyThread
-    public BomjeDb(@NonNull Context context) {
+    public CaughtBomjeDb(@NonNull Context context) {
         this.context = context.getApplicationContext();
     }
 
     @WorkerThread
     public void put(@NonNull WildBomjeEntry entry) throws BomjeDbException {
-        SQLiteDatabase db = WildBomjeDbHelper.getInstance(context).getWritableDatabase();
+        SQLiteDatabase db = BomjeDbHelper.getInstance(context).getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(WildBomjeDbContract.WildBomjeDb._ID, entry.id);
-        values.put(WildBomjeDbContract.WildBomjeDb.BOMJE_TYPE, entry.bomje.type.getValue());
-        values.put(WildBomjeDbContract.WildBomjeDb.WIDTH, entry.bomje.wight);
-        values.put(WildBomjeDbContract.WildBomjeDb.HEIGHT, entry.bomje.height);
-        values.put(WildBomjeDbContract.WildBomjeDb.LATITUDE, entry.location.getLatitude());
-        values.put(WildBomjeDbContract.WildBomjeDb.LONGITUDE, entry.location.getLongitude());
+        values.put(BomjeDbContract.CaughtBomjeDb._ID, entry.id);
+        values.put(BomjeDbContract.CaughtBomjeDb.BOMJE_TYPE, entry.bomje.type.getValue());
+        values.put(BomjeDbContract.CaughtBomjeDb.WEIGHT, entry.bomje.weight);
+        values.put(BomjeDbContract.CaughtBomjeDb.HEIGHT, entry.bomje.height);
+        values.put(BomjeDbContract.CaughtBomjeDb.LATITUDE, entry.location.getLatitude());
+        values.put(BomjeDbContract.CaughtBomjeDb.LONGITUDE, entry.location.getLongitude());
 
-        if (db.insert(WildBomjeDbContract.WildBomjeDb.TABLE, null, values) == -1) {
+        if (db.insert(BomjeDbContract.CaughtBomjeDb.TABLE, null, values) == -1) {
             throw new BomjeDbException("Can't add into data base: " + entry.toString());
         }
     }
 
     @WorkerThread
     public List<WildBomjeEntry> getAll() {
-        SQLiteDatabase db = WildBomjeDbHelper.getInstance(context).getReadableDatabase();
+        SQLiteDatabase db = BomjeDbHelper.getInstance(context).getReadableDatabase();
 
         List<WildBomjeEntry> wildBomjes = new ArrayList<>();
 
         try (Cursor cursor = db.query(
-                WildBomjeDbContract.WildBomjeDb.TABLE,
-                WildBomjeDbContract.WildBomjeDb.ALL,
+                BomjeDbContract.CaughtBomjeDb.TABLE,
+                BomjeDbContract.CaughtBomjeDb.ALL,
                 "1",
                 null,
                 null,
@@ -88,9 +80,9 @@ public class BomjeDb {
 
     @WorkerThread
     public void delete(WildBomjeEntry entry) {
-        SQLiteDatabase db = WildBomjeDbHelper.getInstance(context).getWritableDatabase();
-        db.execSQL("DELETE FROM " + WildBomjeDbContract.WildBomjeDb.TABLE + " WHERE " + WildBomjeDbContract.WildBomjeDb._ID + "=" + entry.id);
+        SQLiteDatabase db = BomjeDbHelper.getInstance(context).getWritableDatabase();
+        db.execSQL("DELETE FROM " + BomjeDbContract.CaughtBomjeDb.TABLE + " WHERE " + BomjeDbContract.CaughtBomjeDb._ID + "=" + entry.id);
     }
 
-    private static final String TAG = "BomjeDb";
+    private static final String TAG = "CaughtBomjeDb";
 }

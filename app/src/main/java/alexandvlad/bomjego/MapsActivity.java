@@ -1,6 +1,7 @@
 package alexandvlad.bomjego;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -29,7 +30,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.List;
 import java.util.Random;
 
-import alexandvlad.bomjego.database.BomjeDb;
+import alexandvlad.bomjego.database.CaughtBomjeDb;
+import alexandvlad.bomjego.database.WildBomjeDb;
 import alexandvlad.bomjego.exceptions.BomjeDbException;
 import alexandvlad.bomjego.model.Bomje;
 import alexandvlad.bomjego.model.BomjeType;
@@ -47,10 +49,16 @@ public class MapsActivity extends FragmentActivity implements
 
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
-    private BomjeDb bomjeDb;
+    private WildBomjeDb bomjeDb;
+    private CaughtBomjeDb caughtBomjeDb;
     private LatLng myLatLng;
 
     Marker marker_1;
+
+    public void onClickShowBomje(View view) {
+        Intent intent = new Intent(this, CaughtListActivity.class);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +77,8 @@ public class MapsActivity extends FragmentActivity implements
                     .build();
         }
 
-        bomjeDb = new BomjeDb(this);
+        bomjeDb = new WildBomjeDb(this);
+        caughtBomjeDb = new CaughtBomjeDb(this);
     }
 
     @Override
@@ -163,6 +172,11 @@ public class MapsActivity extends FragmentActivity implements
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Log.d(TAG, "YEAH!");
+                try {
+                    caughtBomjeDb.put((WildBomjeEntry) marker.getTag());
+                } catch (BomjeDbException e) {
+                    Log.wtf(TAG, "Can't put caught bomje: ", e);
+                }
                 bomjeDb.delete((WildBomjeEntry) marker.getTag());
                 marker.remove();
                 return true;

@@ -2,14 +2,12 @@ package alexandvlad.bomjego.database;
 
 import android.provider.BaseColumns;
 
-import java.util.Arrays;
-
-public class WildBomjeDbContract {
+public class BomjeDbContract {
 
     private interface WildBomjeColumns extends BaseColumns, BomjeContract.BomjeColumns {
         String LATITUDE = "latitude";
         String LONGITUDE = "longitude";
-        String[] ALL = {_ID, BOMJE_TYPE, WIDTH, HEIGHT, LATITUDE, LONGITUDE};
+        String[] ALL = {_ID, BOMJE_TYPE, WEIGHT, HEIGHT, LATITUDE, LONGITUDE};
     }
 
     static final class WildBomjeDb implements WildBomjeColumns {
@@ -19,11 +17,24 @@ public class WildBomjeDbContract {
                 + " ("
                 + _ID + " INTEGER PRIMARY KEY, "
                 + BOMJE_TYPE + " INTEGER, "
-                + WIDTH + " INTEGER, "
+                + WEIGHT + " INTEGER, "
                 + HEIGHT + " INTEGER, "
                 + LATITUDE + " REAL, "
                 + LONGITUDE + " REAL)";
     }
 
-    private static final String TAG = "WildBomjeDbContract";
+    static final class CaughtBomjeDb implements WildBomjeColumns {
+        static final String TABLE = "caught_bomje";
+
+        static final String CREATE_TABLE = "CREATE TABLE " + TABLE
+                + " ("
+                + _ID + " INTEGER PRIMARY KEY, "
+                + BOMJE_TYPE + " INTEGER, "
+                + WEIGHT + " INTEGER, "
+                + HEIGHT + " INTEGER, "
+                + LATITUDE + " REAL, "
+                + LONGITUDE + " REAL)";
+    }
+
+    private static final String TAG = "BomjeDbContract";
 }

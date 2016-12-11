@@ -6,7 +6,7 @@ public class BomjeContract {
 
     interface BomjeColumns extends BaseColumns {
         String BOMJE_TYPE = "bomje_type";
-        String WIDTH = "width";
+        String WEIGHT = "weight";
         String HEIGHT = "height";
     }
 
