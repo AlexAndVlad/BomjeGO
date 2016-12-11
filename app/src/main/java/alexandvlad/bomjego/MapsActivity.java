@@ -19,10 +19,13 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -53,7 +56,8 @@ public class MapsActivity extends FragmentActivity implements
     private CaughtBomjeDb caughtBomjeDb;
     private LatLng myLatLng;
 
-    Marker marker_1;
+    private Location prevLocation;
+    private double distance = 0d;
 
     public void onClickShowBomje(View view) {
         Intent intent = new Intent(this, CaughtListActivity.class);
@@ -113,6 +117,23 @@ public class MapsActivity extends FragmentActivity implements
         boolean f = true;
         while (f) {
             WildBomjeEntry wildBomje = new WildBomjeEntry(id++, bomje, temp);
+            try {
+                bomjeDb.put(wildBomje);
+                addBomjeMarker(wildBomje);
+                f = false;
+            } catch (BomjeDbException ignored) {
+            }
+        }
+    }
+
+    public void addBomjeToLocation(Location location) {
+        Random r = new Random();
+        location.setLatitude(location.getLatitude() +((double)getRandomNumberInRange(-1, 1)) / 1000);
+        location.setLongitude(location.getLongitude() + ((double)getRandomNumberInRange(-1,1)) / 1000);
+        Bomje bomje = new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 3)), 10, 10);
+        boolean f = true;
+        while (f) {
+            WildBomjeEntry wildBomje = new WildBomjeEntry(id++, bomje, location);
             try {
                 bomjeDb.put(wildBomje);
                 addBomjeMarker(wildBomje);
@@ -183,7 +204,6 @@ public class MapsActivity extends FragmentActivity implements
             }
 
         });
-
         drawDbBomjes();
     }
 
@@ -234,11 +254,27 @@ public class MapsActivity extends FragmentActivity implements
 
     @Override
     public void onLocationChanged(Location location) {
-        //mLastLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-        LatLng currentPosition = new LatLng(location.getLatitude(), location.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+        googleMap.animateCamera(cameraUpdate);
 
+        googleMap.getUiSettings().setRotateGesturesEnabled(true);
         myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
+        if(prevLocation == null)
+            prevLocation = location;
+        double distanceToLast = location.distanceTo(prevLocation);
+        if (distanceToLast < 10.00) {
+            Log.d("DISTANCE", "Values too close, so not used.");
+        } else {
+            distance += distanceToLast;
+            if(distanceToLast > 20.00) {
+                addBomjeToLocation(location);
+                distance = 0.00;
+            }
+            Log.d("DISTANCE", String.valueOf(distance));
+        }
+        prevLocation = location;
     }
 
     private static final String TAG = "MapActivity";

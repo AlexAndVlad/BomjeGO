@@ -20,6 +20,8 @@ public class WildBomjeEntry {
         this.location = location;
     }
 
+
+
     @Override
     public String toString() {
         return "Bomje(" + bomje.toString() + "): latitude=" + location.getLatitude() + ", longitude=" + location.getLongitude();
