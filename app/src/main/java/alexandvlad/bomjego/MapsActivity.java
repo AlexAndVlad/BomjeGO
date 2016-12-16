@@ -3,6 +3,8 @@ package alexandvlad.bomjego;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -143,27 +146,34 @@ public class MapsActivity extends FragmentActivity implements
         }
     }
 
+    public Bitmap resizeMapIcons(String iconName,int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
+    }
+
     private void addBomjeMarker(WildBomjeEntry wildBomje) {
         Marker a = null;
+
         if (wildBomje.bomje.type.equals(BomjeType.NORMAL)) {
             a = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje1))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("b4",150,150)))
             );
         } else if (wildBomje.bomje.type.equals(BomjeType.WITH_BOX)) {
             a = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje2))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("b12",150,150)))
             );
         } else if (wildBomje.bomje.type.equals(BomjeType.RAIL_STATION)) {
             a = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje3))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("b16",150,150)))
             );
         } else if (wildBomje.bomje.type.equals(BomjeType.PARK)) {
             a = googleMap.addMarker(new MarkerOptions()
                     .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.bomje4))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("b41",150,150)))
             );
         }
         if (a != null) {
@@ -180,6 +190,8 @@ public class MapsActivity extends FragmentActivity implements
 
     @SuppressWarnings("MissingPermission")
     private void doStuff() {
+        googleMap.getUiSettings().setAllGesturesEnabled(false);
+        googleMap.getUiSettings().setRotateGesturesEnabled(true);
         googleMap.setMyLocationEnabled(true);
         googleMap.setBuildingsEnabled(true);
 
@@ -258,7 +270,6 @@ public class MapsActivity extends FragmentActivity implements
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
         googleMap.animateCamera(cameraUpdate);
 
-        googleMap.getUiSettings().setRotateGesturesEnabled(true);
         myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         if(prevLocation == null)
