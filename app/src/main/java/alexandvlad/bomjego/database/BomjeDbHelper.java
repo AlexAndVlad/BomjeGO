@@ -10,7 +10,7 @@ class BomjeDbHelper extends SQLiteOpenHelper {
 
     private static final String DB_FILE_NAME = "wild_bomje.db";
 
-    private static final int DB_VERSION = 3;
+    private static final int DB_VERSION = 12;
 
     private static volatile BomjeDbHelper instance;
 
@@ -34,12 +34,14 @@ class BomjeDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL(BomjeDbContract.WildBomjeDb.CREATE_TABLE);
         sqLiteDatabase.execSQL(BomjeDbContract.CaughtBomjeDb.CREATE_TABLE);
+        sqLiteDatabase.execSQL(BomjeDbContract.GlobalDb.CREATE_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + BomjeDbContract.WildBomjeDb.TABLE);
         sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + BomjeDbContract.CaughtBomjeDb.TABLE);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + BomjeDbContract.GlobalDb.TABLE);
         onCreate(sqLiteDatabase);
     }
 

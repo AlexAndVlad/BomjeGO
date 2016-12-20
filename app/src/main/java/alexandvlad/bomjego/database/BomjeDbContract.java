@@ -2,7 +2,9 @@ package alexandvlad.bomjego.database;
 
 import android.provider.BaseColumns;
 
-public class BomjeDbContract {
+import static alexandvlad.bomjego.database.BomjeContract.BomjeColumns.BOMJE_TYPE;
+
+class BomjeDbContract {
 
     private interface WildBomjeColumns extends BaseColumns, BomjeContract.BomjeColumns {
         String LATITUDE = "latitude";
@@ -34,6 +36,17 @@ public class BomjeDbContract {
                 + HEIGHT + " INTEGER, "
                 + LATITUDE + " REAL, "
                 + LONGITUDE + " REAL)";
+    }
+
+    static final class GlobalDb implements BaseColumns {
+        static final String TABLE = "global_variables";
+
+        static final String VALUE = "value";
+
+        static final String CREATE_TABLE = "CREATE TABLE " + TABLE
+                + " ("
+                + _ID + " TEXT, "
+                + VALUE + " BLOB)";
     }
 
     private static final String TAG = "BomjeDbContract";
