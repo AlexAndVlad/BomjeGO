@@ -1,6 +1,7 @@
 package alexandvlad.bomjego;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,10 +10,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.lang.Object;
 import java.util.List;
+
 
 import alexandvlad.bomjego.model.BomjeType;
 import alexandvlad.bomjego.model.WildBomjeEntry;
+import alexandvlad.bomjego.MapsActivity;
 
 class WildBomjeEntryAdapter extends RecyclerView.Adapter<WildBomjeEntryAdapter.BomjeViewHolder> {
 
@@ -20,6 +24,7 @@ class WildBomjeEntryAdapter extends RecyclerView.Adapter<WildBomjeEntryAdapter.B
     private final Context context;
     private final LayoutInflater layoutInflater;
     private List<WildBomjeEntry> bomjes;
+
 
     WildBomjeEntryAdapter(Context context) {
         this.context = context;
@@ -36,39 +41,45 @@ class WildBomjeEntryAdapter extends RecyclerView.Adapter<WildBomjeEntryAdapter.B
         return BomjeViewHolder.newInstance(layoutInflater, parent);
     }
 
+    public Bitmap resizeMapIcons(String iconName, int width, int height){
+        Bitmap imageBitmap = BitmapFactory.decodeResource(context.getResources(),context.getResources().getIdentifier(iconName, "drawable", context.getPackageName()));
+        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+        return resizedBitmap;
+    }
+
     @Override
     public void onBindViewHolder(BomjeViewHolder holder, int position) {
         final WildBomjeEntry bomje = bomjes.get(position);
         if (bomje.bomje.type.equals(BomjeType.ANTON)) {
             holder.nameView.setText("BOMJE ANTON");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_anton));
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_anton",130,130));
         } else if (bomje.bomje.type.equals(BomjeType.DELOVOI)) {
             holder.nameView.setText("BOMJE DELOVOI");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_delovoi));
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_delovoi",130,130));
         } else if (bomje.bomje.type.equals(BomjeType.DEREVENSKI)) {
             holder.nameView.setText("DEREVENSKI BOMJE");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_derevenski));
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_derevenski",130,130));
         } else if (bomje.bomje.type.equals(BomjeType.JIRNIY)) {
             holder.nameView.setText("JIRNIY BOMJE");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_jirniy));
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_jirniy",130,130));
         } else if (bomje.bomje.type.equals(BomjeType.MUTANT)) {
             holder.nameView.setText("MUTANT BOMJE");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_mutant));
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_mutant",130,130));
         } else if (bomje.bomje.type.equals(BomjeType.OPASNI)) {
             holder.nameView.setText("OPASNY BOMJE");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_opasni));
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_opasni",130,130));
         } else if (bomje.bomje.type.equals(BomjeType.S_BORODOY)) {
             holder.nameView.setText("BOMJE WITH BORODA");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_s_borodoy));
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_s_borodoy",130,130));
         } else if (bomje.bomje.type.equals(BomjeType.SEXY)) {
             holder.nameView.setText("SEXY BOMJE");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_sexy));
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_sexy",130,130));
         } else if (bomje.bomje.type.equals(BomjeType.SOZDATEL)) {
             holder.nameView.setText("!!!x322xBOMJEx228x!!!");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_sozdatel));
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_sozdatel",130,130));
         } else if (bomje.bomje.type.equals(BomjeType.WITH_OGNETUSHITEL)) {
             holder.nameView.setText("BOMJE WITH OGNETUSHITEL");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_with_ognetushitel));
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_with_ognetushitel",130,130));
         }
         holder.weightView.setText("Weight: " + bomje.bomje.weight);
         holder.heightView.setText("Height: " + bomje.bomje.height);
@@ -78,6 +89,8 @@ class WildBomjeEntryAdapter extends RecyclerView.Adapter<WildBomjeEntryAdapter.B
     public int getItemCount() {
         return bomjes.size();
     }
+
+
 
     static class BomjeViewHolder extends RecyclerView.ViewHolder {
 
