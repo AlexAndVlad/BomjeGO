@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,6 +14,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -26,45 +26,31 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
 
-import alexandvlad.bomjego.database.CaughtBomjeDb;
-import alexandvlad.bomjego.database.GlobalValues;
-import alexandvlad.bomjego.database.WildBomjeDb;
-import alexandvlad.bomjego.exceptions.BomjeDbException;
-import alexandvlad.bomjego.model.Bomje;
 import alexandvlad.bomjego.model.BomjeType;
 import alexandvlad.bomjego.model.WildBomjeEntry;
 
-import static android.R.attr.id;
 import static com.google.android.gms.location.LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
 
 public class MapsActivity extends FragmentActivity implements
         OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
-        LocationListener {
+        LocationListener,
+        AddBomjeListener {
 
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
 
-    private static final String LAST_INDEX = "last_index";
 
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
-    private WildBomjeDb bomjeDb;
-    private CaughtBomjeDb caughtBomjeDb;
-    private GlobalValues globalValues;
-    private LatLng myLatLng;
+    private BomjeLogic logic;
 
     private ArrayList<Marker> Markers = new ArrayList<>();
 
@@ -92,9 +78,84 @@ public class MapsActivity extends FragmentActivity implements
                     .build();
         }
 
-        bomjeDb = new WildBomjeDb(this);
-        caughtBomjeDb = new CaughtBomjeDb(this);
-        globalValues = new GlobalValues(this);
+        logic = new BomjeLogic(this, this, (Button)findViewById(R.id.button_show_caught));
+    }
+
+    public void addBomje(View view) {
+        logic.addBomje();
+    }
+
+    public void addBomjeToLocation(Location location) {
+        logic.addBomjeToLocation(location);
+    }
+
+    private Bitmap resizeMapIcons(String iconName, int width, int height) {
+        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), getResources().getIdentifier(iconName, "drawable", getPackageName()));
+        return Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+    }
+
+    @Override
+    public void addBomje(WildBomjeEntry wildBomje) {
+        if (wildBomje.bomje.type.equals(BomjeType.ANTON)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_anton", 130, 130))))
+            );
+        } else if (wildBomje.bomje.type.equals(BomjeType.OPASNI)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_opasni", 130, 130))))
+            );
+        } else if (wildBomje.bomje.type.equals(BomjeType.DEREVENSKI)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_derevenski", 130, 130))))
+            );
+        } else if (wildBomje.bomje.type.equals(BomjeType.DELOVOI)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_delovoi", 130, 130))))
+            );
+        } else if (wildBomje.bomje.type.equals(BomjeType.JIRNIY)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_jirniy", 130, 130))))
+            );
+        } else if (wildBomje.bomje.type.equals(BomjeType.MUTANT)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_mutant", 130, 130))))
+            );
+        } else if (wildBomje.bomje.type.equals(BomjeType.OPASNI)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_opasni", 130, 130))))
+            );
+        } else if (wildBomje.bomje.type.equals(BomjeType.S_BORODOY)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_s_borodoy", 130, 130))))
+            );
+        } else if (wildBomje.bomje.type.equals(BomjeType.SEXY)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_sexy", 130, 130))))
+            );
+        } else if (wildBomje.bomje.type.equals(BomjeType.SOZDATEL)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_sozdatel", 130, 130))))
+            );
+        } else if (wildBomje.bomje.type.equals(BomjeType.WITH_OGNETUSHITEL)) {
+            Markers.add(googleMap.addMarker(new MarkerOptions()
+                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
+                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_with_ognetushitel", 130, 130))))
+            );
+        }
+        Markers.get(Markers.size() - 1).setTag(wildBomje);
+        if (Markers.get(Markers.size() - 1) != null) {
+            Markers.get(Markers.size() - 1).setTag(wildBomje);
+        }
     }
 
     @Override
@@ -109,122 +170,9 @@ public class MapsActivity extends FragmentActivity implements
         super.onStop();
     }
 
-    private static int getRandomNumberInRange(int min, int max) {
-        if (min >= max) {
-            throw new IllegalArgumentException("max must be greater than min");
-        }
-        Random r = new Random();
-        return r.nextInt((max - min) + 1) + min;
-    }
-
-    private void addBomjeToDb(Bomje bomje, Location location) {
-        try {
-            int id = globalValues.getOrPutInt(LAST_INDEX, 0);
-            globalValues.put(LAST_INDEX, id + 1);
-            WildBomjeEntry wildBomje = new WildBomjeEntry(id, bomje, location);
-            bomjeDb.put(wildBomje);
-            addBomjeMarker(wildBomje);
-        } catch (BomjeDbException e) {
-            Log.wtf(TAG, e);
-        }
-    }
-
-    public void addBomje(View view) {
-        Location temp = new Location(LocationManager.GPS_PROVIDER);
-        Random r = new Random();
-        temp.setLatitude(r.nextDouble() * 90);
-        temp.setLongitude(r.nextDouble() * 180);
-
-        addBomjeToDb(new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 9)), 10, 10), temp); //TODO: different values
-    }
-
-    public void addBomjeToLocation(Location location) {
-        location.setLatitude(location.getLatitude() + ((double) getRandomNumberInRange(-1, 1)) / 1000);
-        location.setLongitude(location.getLongitude() + ((double) getRandomNumberInRange(-1, 1)) / 1000);
-        Bomje bomje = new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 9)), 10, 10); //TODO: different values
-
-        addBomjeToDb(bomje, location);
-    }
-
-    public Bitmap resizeMapIcons(String iconName,int width, int height){
-        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getPackageName()));
-        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
-        return resizedBitmap;
-    }
-
-    private void addBomjeMarker(WildBomjeEntry wildBomje) {
-        if (wildBomje.bomje.type.equals(BomjeType.ANTON)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_anton",130,130))))
-            );
-        } else if (wildBomje.bomje.type.equals(BomjeType.OPASNI)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_opasni",130,130))))
-            );
-        } else if (wildBomje.bomje.type.equals(BomjeType.DEREVENSKI)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_derevenski",130,130))))
-            );
-        } else if (wildBomje.bomje.type.equals(BomjeType.DELOVOI)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_delovoi",130,130))))
-            );
-        } else if (wildBomje.bomje.type.equals(BomjeType.JIRNIY)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_jirniy",130,130))))
-            );
-        } else if (wildBomje.bomje.type.equals(BomjeType.MUTANT)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_mutant",130,130))))
-            );
-        } else if (wildBomje.bomje.type.equals(BomjeType.OPASNI)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_opasni",130,130))))
-            );
-        } else if (wildBomje.bomje.type.equals(BomjeType.S_BORODOY)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_s_borodoy",130,130))))
-            );
-        } else if (wildBomje.bomje.type.equals(BomjeType.SEXY)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_sexy",130,130))))
-            );
-        } else if (wildBomje.bomje.type.equals(BomjeType.SOZDATEL)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_sozdatel",130,130))))
-            );
-        } else if (wildBomje.bomje.type.equals(BomjeType.WITH_OGNETUSHITEL)) {
-            Markers.add(googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(wildBomje.location.getLatitude(), wildBomje.location.getLongitude()))
-                    .icon(BitmapDescriptorFactory.fromBitmap(resizeMapIcons("bomje_with_ognetushitel",130,130))))
-            );
-        }
-        Markers.get(Markers.size() - 1).setTag(wildBomje);
-        if (Markers.get(Markers.size() - 1) != null) {
-            Markers.get(Markers.size() - 1).setTag(wildBomje);
-        }
-    }
-
-    private void drawDbBomjes() {
-        List<WildBomjeEntry> wildBomjes = bomjeDb.getAll();
-        for (WildBomjeEntry i : wildBomjes) {
-            addBomjeMarker(i);
-        }
-    }
-
     @SuppressWarnings("MissingPermission")
     private void doStuff() {
-   //     googleMap.getUiSettings().setAllGesturesEnabled(false);
+        //     googleMap.getUiSettings().setAllGesturesEnabled(false);
         googleMap.getUiSettings().setRotateGesturesEnabled(true);
         googleMap.setMyLocationEnabled(true);
         googleMap.setBuildingsEnabled(true);
@@ -235,22 +183,8 @@ public class MapsActivity extends FragmentActivity implements
         request.setPriority(PRIORITY_BALANCED_POWER_ACCURACY);
         LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, request, this);
 
-        googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                Log.d(TAG, "YEAH!");
-                try {
-                    caughtBomjeDb.put((WildBomjeEntry) marker.getTag());
-                } catch (BomjeDbException e) {
-                    Log.wtf(TAG, "Can't put caught bomje: ", e);
-                }
-                bomjeDb.delete((WildBomjeEntry) marker.getTag());
-                marker.remove();
-                return true;
-            }
-
-        });
-        drawDbBomjes();
+        googleMap.setOnMarkerClickListener(logic.getClickListener());
+        logic.drawDbBomjes();
     }
 
     @Override
@@ -302,9 +236,7 @@ public class MapsActivity extends FragmentActivity implements
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-     //   googleMap.animateCamera(cameraUpdate);
-
-        myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+        //   googleMap.animateCamera(cameraUpdate);
 
         if (prevLocation == null)
             prevLocation = location;
@@ -313,16 +245,15 @@ public class MapsActivity extends FragmentActivity implements
             Log.d("DISTANCE", "Values too close, so not used.");
         } else {
             distance += distanceToLast;
-            if(distanceToLast > 30.00) {
-                for(Marker a :Markers) {
+            if (distanceToLast > 30.00) {
+                for (Marker a : Markers) {
                     Location a1 = new Location(location);
                     a1.setLongitude(a.getPosition().longitude);
                     a1.setLatitude(a.getPosition().latitude);
-                    if(location.distanceTo(a1) > 50) {
+                    if (location.distanceTo(a1) > 50) {
                         a.setVisible(false);
                         Log.d("bomje become invisible", "");
-                    }
-                    else if(!a.isVisible()) {
+                    } else if (!a.isVisible()) {
                         a.setVisible(true);
                     }
                 }

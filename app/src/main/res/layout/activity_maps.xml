@@ -25,7 +25,7 @@
             android:onClick="addBomje"/>
 
         <Button
-            android:text="Bomjes"
+            android:text="@string/show_caught"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/button_show_caught"
