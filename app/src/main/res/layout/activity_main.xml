@@ -18,6 +18,7 @@
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
         android:textSize="30sp"
-        android:onClick="onClick" />
+        android:onClick="onClick"
+      />
 
 </RelativeLayout>

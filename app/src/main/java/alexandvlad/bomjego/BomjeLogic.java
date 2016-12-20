@@ -94,7 +94,6 @@ public class BomjeLogic {
         for (WildBomjeEntry i : wildBomjes) {
             bomjeListener.addBomje(i);
         }
-
         try {
             listButton.setText(context.getResources().getText(R.string.show_caught) + "(" + globalValues.getOrPutInt(TOTAL_CAUGHT_COUNT, 0) + ")");
         } catch (BomjeDbException ignored) {
