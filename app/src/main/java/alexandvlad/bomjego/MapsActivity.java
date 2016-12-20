@@ -180,10 +180,10 @@ public class MapsActivity extends FragmentActivity implements
         googleMap.getUiSettings().setCompassEnabled(false);
         googleMap.setMyLocationEnabled(true);
 
-        googleMap.setMinZoomPreference(17.0f);
-        googleMap.setMaxZoomPreference(23.0f);
+        //googleMap.setMinZoomPreference(17.0f);
+        //googleMap.setMaxZoomPreference(23.0f);
 
-        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        //googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         LocationRequest request = new LocationRequest();
         request.setInterval(500);
