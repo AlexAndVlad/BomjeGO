@@ -24,6 +24,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
@@ -39,14 +40,12 @@ import java.util.List;
 import java.util.Random;
 
 import alexandvlad.bomjego.database.CaughtBomjeDb;
-import alexandvlad.bomjego.database.GlobalValues;
 import alexandvlad.bomjego.database.WildBomjeDb;
 import alexandvlad.bomjego.exceptions.BomjeDbException;
 import alexandvlad.bomjego.model.Bomje;
 import alexandvlad.bomjego.model.BomjeType;
 import alexandvlad.bomjego.model.WildBomjeEntry;
 
-import static android.R.attr.id;
 import static com.google.android.gms.location.LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
 
 public class MapsActivity extends FragmentActivity implements
@@ -57,13 +56,10 @@ public class MapsActivity extends FragmentActivity implements
 
     private static final int MY_PERMISSIONS_REQUEST_FINE_LOCATION = 1;
 
-    private static final String LAST_INDEX = "last_index";
-
     private GoogleMap googleMap;
     private GoogleApiClient googleApiClient;
     private WildBomjeDb bomjeDb;
     private CaughtBomjeDb caughtBomjeDb;
-    private GlobalValues globalValues;
     private LatLng myLatLng;
 
     private ArrayList<Marker> Markers = new ArrayList<>();
@@ -94,7 +90,6 @@ public class MapsActivity extends FragmentActivity implements
 
         bomjeDb = new WildBomjeDb(this);
         caughtBomjeDb = new CaughtBomjeDb(this);
-        globalValues = new GlobalValues(this);
     }
 
     @Override
@@ -117,17 +112,7 @@ public class MapsActivity extends FragmentActivity implements
         return r.nextInt((max - min) + 1) + min;
     }
 
-    private void addBomjeToDb(Bomje bomje, Location location) {
-        try {
-            int id = globalValues.getOrPutInt(LAST_INDEX, 0);
-            globalValues.put(LAST_INDEX, id + 1);
-            WildBomjeEntry wildBomje = new WildBomjeEntry(id, bomje, location);
-            bomjeDb.put(wildBomje);
-            addBomjeMarker(wildBomje);
-        } catch (BomjeDbException e) {
-            Log.wtf(TAG, e);
-        }
-    }
+    private int id = 0;
 
     public void addBomje(View view) {
         Location temp = new Location(LocationManager.GPS_PROVIDER);
@@ -135,15 +120,34 @@ public class MapsActivity extends FragmentActivity implements
         temp.setLatitude(r.nextDouble() * 90);
         temp.setLongitude(r.nextDouble() * 180);
 
-        addBomjeToDb(new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 9)), 10, 10), temp); //TODO: different values
+        Bomje bomje = new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 3)), 10, 10);
+        boolean f = true;
+        while (f) {
+            WildBomjeEntry wildBomje = new WildBomjeEntry(id++, bomje, temp);
+            try {
+                bomjeDb.put(wildBomje);
+                addBomjeMarker(wildBomje);
+                f = false;
+            } catch (BomjeDbException ignored) {
+            }
+        }
     }
 
     public void addBomjeToLocation(Location location) {
-        location.setLatitude(location.getLatitude() + ((double) getRandomNumberInRange(-1, 1)) / 1000);
-        location.setLongitude(location.getLongitude() + ((double) getRandomNumberInRange(-1, 1)) / 1000);
-        Bomje bomje = new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 9)), 10, 10); //TODO: different values
-
-        addBomjeToDb(bomje, location);
+        Random r = new Random();
+        location.setLatitude(location.getLatitude() +((double)getRandomNumberInRange(-1, 1)) / 1000);
+        location.setLongitude(location.getLongitude() + ((double)getRandomNumberInRange(-1,1)) / 1000);
+        Bomje bomje = new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 9)), 10, 10);
+        boolean f = true;
+        while (f) {
+            WildBomjeEntry wildBomje = new WildBomjeEntry(id++, bomje, location);
+            try {
+                bomjeDb.put(wildBomje);
+                addBomjeMarker(wildBomje);
+                f = false;
+            } catch (BomjeDbException ignored) {
+            }
+        }
     }
 
     public Bitmap resizeMapIcons(String iconName,int width, int height){
@@ -224,10 +228,17 @@ public class MapsActivity extends FragmentActivity implements
 
     @SuppressWarnings("MissingPermission")
     private void doStuff() {
-   //     googleMap.getUiSettings().setAllGesturesEnabled(false);
         googleMap.getUiSettings().setRotateGesturesEnabled(true);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        googleMap.getUiSettings().setCompassEnabled(false);
         googleMap.setMyLocationEnabled(true);
-        googleMap.setBuildingsEnabled(true);
+
+        googleMap.setMinZoomPreference(17.0f);
+        googleMap.setMaxZoomPreference(23.0f);
+
+        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         LocationRequest request = new LocationRequest();
         request.setInterval(500);
@@ -302,25 +313,24 @@ public class MapsActivity extends FragmentActivity implements
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-     //   googleMap.animateCamera(cameraUpdate);
-
         myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        if (prevLocation == null)
+        if(prevLocation == null)
             prevLocation = location;
         double distanceToLast = location.distanceTo(prevLocation);
         if (distanceToLast < 10.00) {
             Log.d("DISTANCE", "Values too close, so not used.");
         } else {
+            googleMap.animateCamera(cameraUpdate);
             distance += distanceToLast;
-            if(distanceToLast > 30.00) {
+            if(distanceToLast > 50.00) {
                 for(Marker a :Markers) {
                     Location a1 = new Location(location);
                     a1.setLongitude(a.getPosition().longitude);
                     a1.setLatitude(a.getPosition().latitude);
                     if(location.distanceTo(a1) > 50) {
                         a.setVisible(false);
-                        Log.d("bomje become invisible", "");
+                        Log.d("BOMJE", "bomje become invisible");
                     }
                     else if(!a.isVisible()) {
                         a.setVisible(true);

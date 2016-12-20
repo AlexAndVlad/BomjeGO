@@ -62,7 +62,7 @@ class WildBomjeEntryAdapter extends RecyclerView.Adapter<WildBomjeEntryAdapter.B
             holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_s_borodoy));
         } else if (bomje.bomje.type.equals(BomjeType.SEXY)) {
             holder.nameView.setText("SEXY BOMJE");
-            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_sozdatel));
+            holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_sexy));
         } else if (bomje.bomje.type.equals(BomjeType.SOZDATEL)) {
             holder.nameView.setText("!!!x322xBOMJEx228x!!!");
             holder.imageView.setImageBitmap(BitmapFactory.decodeResource(context.getResources(), R.drawable.bomje_sozdatel));
