@@ -1,10 +1,16 @@
 package alexandvlad.bomjego.model;
 
 public enum BomjeType {
-    NORMAL(0),
-    WITH_BOX(1),
-    RAIL_STATION(2),
-    PARK(3);
+    ANTON(0),
+    DELOVOI(1),
+    DEREVENSKI(2),
+    JIRNIY(3),
+    MUTANT(4),
+    OPASNI(5),
+    S_BORODOY(6),
+    SEXY(7),
+    SOZDATEL(8),
+    WITH_OGNETUSHITEL(9);
 
     private final int value;
     BomjeType(int value) {
