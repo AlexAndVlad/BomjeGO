@@ -24,6 +24,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -172,10 +173,17 @@ public class MapsActivity extends FragmentActivity implements
 
     @SuppressWarnings("MissingPermission")
     private void doStuff() {
-        //     googleMap.getUiSettings().setAllGesturesEnabled(false);
         googleMap.getUiSettings().setRotateGesturesEnabled(true);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        googleMap.getUiSettings().setMapToolbarEnabled(false);
+        googleMap.getUiSettings().setCompassEnabled(false);
         googleMap.setMyLocationEnabled(true);
-        googleMap.setBuildingsEnabled(true);
+
+        googleMap.setMinZoomPreference(17.0f);
+        googleMap.setMaxZoomPreference(23.0f);
+
+        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         LocationRequest request = new LocationRequest();
         request.setInterval(500);
@@ -236,24 +244,26 @@ public class MapsActivity extends FragmentActivity implements
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-        //   googleMap.animateCamera(cameraUpdate);
+        myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        if (prevLocation == null)
+        if(prevLocation == null)
             prevLocation = location;
         double distanceToLast = location.distanceTo(prevLocation);
         if (distanceToLast < 10.00) {
             Log.d("DISTANCE", "Values too close, so not used.");
         } else {
+            googleMap.animateCamera(cameraUpdate);
             distance += distanceToLast;
-            if (distanceToLast > 30.00) {
-                for (Marker a : Markers) {
+            if(distanceToLast > 50.00) {
+                for(Marker a :Markers) {
                     Location a1 = new Location(location);
                     a1.setLongitude(a.getPosition().longitude);
                     a1.setLatitude(a.getPosition().latitude);
-                    if (location.distanceTo(a1) > 50) {
+                    if(location.distanceTo(a1) > 50) {
                         a.setVisible(false);
-                        Log.d("bomje become invisible", "");
-                    } else if (!a.isVisible()) {
+                        Log.d("BOMJE", "bomje become invisible");
+                    }
+                    else if(!a.isVisible()) {
                         a.setVisible(true);
                     }
                 }
