@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import alexandvlad.bomjego.model.BomjeType;
 import alexandvlad.bomjego.model.WildBomjeEntry;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static com.google.android.gms.location.LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY;
 
 public class MapsActivity extends FragmentActivity implements
@@ -205,7 +206,7 @@ public class MapsActivity extends FragmentActivity implements
                         && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                     doStuff();
                 } else {
-                    // TODO: WE GOT NO PERMISSION
+                    Log.e(TAG, "WE GOT NO PERMISSION");
                 }
             }
         }
@@ -231,13 +232,11 @@ public class MapsActivity extends FragmentActivity implements
     @Override
     public void onConnectionSuspended(int i) {
         Log.d(TAG, "GoogleApi Suspended");
-        // TODO: X3
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "GoogleApi Connection Failed");
-        // TODO: X3
     }
 
     @Override

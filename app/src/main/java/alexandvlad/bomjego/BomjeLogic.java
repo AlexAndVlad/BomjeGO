@@ -5,7 +5,6 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.util.Log;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
@@ -20,6 +19,7 @@ import alexandvlad.bomjego.exceptions.BomjeDbException;
 import alexandvlad.bomjego.model.Bomje;
 import alexandvlad.bomjego.model.BomjeType;
 import alexandvlad.bomjego.model.WildBomjeEntry;
+import alexandvlad.bomjego.utils.Utils;
 
 public class BomjeLogic {
     private static final String LAST_INDEX = "last_index";
@@ -60,14 +60,6 @@ public class BomjeLogic {
         caughtBomjeDb = new CaughtBomjeDb(context);
     }
 
-    private static int getRandomNumberInRange(int min, int max) {
-        if (min >= max) {
-            throw new IllegalArgumentException("max must be greater than min");
-        }
-        Random r = new Random();
-        return r.nextInt((max - min) + 1) + min;
-    }
-
     private void addBomjeToDb(Bomje bomje, Location location) {
         try {
             int id = globalValues.getOrPutInt(LAST_INDEX, 0);
@@ -86,13 +78,13 @@ public class BomjeLogic {
         temp.setLatitude(r.nextDouble() * 90);
         temp.setLongitude(r.nextDouble() * 180);
 
-        addBomjeToDb(new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 9)), 10, 10), temp); //TODO: different values
+        addBomjeToDb(new Bomje(BomjeType.getRandomBomje(), 10, 10), temp); //TODO: different values
     }
 
     void addBomjeToLocation(Location location) {
-        location.setLatitude(location.getLatitude() + ((double) getRandomNumberInRange(-1, 1)) / 1000);
-        location.setLongitude(location.getLongitude() + ((double) getRandomNumberInRange(-1, 1)) / 1000);
-        Bomje bomje = new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 9)), 10, 10); //TODO: different values
+        location.setLatitude(location.getLatitude() + ((double) Utils.getRandomNumberInRange(-1, 1)) / 1000);
+        location.setLongitude(location.getLongitude() + ((double) Utils.getRandomNumberInRange(-1, 1)) / 1000);
+        Bomje bomje = new Bomje(BomjeType.getRandomBomje(), Utils.getRandomNumberInRange(40, 150), Utils.getRandomNumberInRange(130, 230));
 
         addBomjeToDb(bomje, location);
     }
