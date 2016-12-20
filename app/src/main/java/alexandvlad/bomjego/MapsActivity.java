@@ -244,7 +244,6 @@ public class MapsActivity extends FragmentActivity implements
     public void onLocationChanged(Location location) {
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-        myLatLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         if(prevLocation == null)
             prevLocation = location;
