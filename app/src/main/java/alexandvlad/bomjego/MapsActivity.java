@@ -180,10 +180,10 @@ public class MapsActivity extends FragmentActivity implements
         googleMap.getUiSettings().setCompassEnabled(false);
         googleMap.setMyLocationEnabled(true);
 
-        //googleMap.setMinZoomPreference(17.0f);
-        //googleMap.setMaxZoomPreference(23.0f);
+        googleMap.setMinZoomPreference(17.0f);
+        googleMap.setMaxZoomPreference(23.0f);
 
-        //googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+        googleMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 
         LocationRequest request = new LocationRequest();
         request.setInterval(500);
@@ -253,12 +253,13 @@ public class MapsActivity extends FragmentActivity implements
         } else {
             googleMap.animateCamera(cameraUpdate);
             distance += distanceToLast;
-            if(distanceToLast > 50.00) {
-                for(Marker a :Markers) {
+            if(distance > 100.00) {
+                addBomjeToLocation(location);
+                for(Marker a : Markers) {
                     Location a1 = new Location(location);
                     a1.setLongitude(a.getPosition().longitude);
                     a1.setLatitude(a.getPosition().latitude);
-                    if(location.distanceTo(a1) > 50) {
+                    if(location.distanceTo(a1) > 150) {
                         a.setVisible(false);
                         Log.d("BOMJE", "bomje become invisible");
                     }
@@ -266,7 +267,6 @@ public class MapsActivity extends FragmentActivity implements
                         a.setVisible(true);
                     }
                 }
-                addBomjeToLocation(location);
                 distance = 0.00;
             }
             Log.d("DISTANCE", String.valueOf(distance));

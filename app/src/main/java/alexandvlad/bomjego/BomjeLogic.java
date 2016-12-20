@@ -93,7 +93,6 @@ public class BomjeLogic {
         location.setLatitude(location.getLatitude() + ((double) getRandomNumberInRange(-1, 1)) / 1000);
         location.setLongitude(location.getLongitude() + ((double) getRandomNumberInRange(-1, 1)) / 1000);
         Bomje bomje = new Bomje(BomjeType.fromInt(getRandomNumberInRange(0, 9)), 10, 10); //TODO: different values
-
         addBomjeToDb(bomje, location);
     }
 
@@ -102,7 +101,6 @@ public class BomjeLogic {
         for (WildBomjeEntry i : wildBomjes) {
             bomjeListener.addBomje(i);
         }
-
         try {
             listButton.setText(context.getResources().getText(R.string.show_caught) + "(" + globalValues.getOrPutInt(TOTAL_CAUGHT_COUNT, 0) + ")");
         } catch (BomjeDbException ignored) {
