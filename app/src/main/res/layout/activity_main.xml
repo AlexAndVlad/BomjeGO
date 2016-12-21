@@ -11,7 +11,7 @@
     tools:context="alexandvlad.bomjego.MainActivity">
 
     <Button
-        android:text="GO CATCH BOMJE"
+        android:text="@string/button_go_catch_bomje"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button2"

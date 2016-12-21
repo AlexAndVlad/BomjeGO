@@ -22,6 +22,7 @@ class WildBomjeEntryAdapter extends RecyclerView.Adapter<WildBomjeEntryAdapter.B
     private final Context context;
     private final LayoutInflater layoutInflater;
     private List<WildBomjeEntry> bomjes;
+    private final static int SCALE_ICON = 290;
 
 
     WildBomjeEntryAdapter(Context context) {
@@ -49,35 +50,35 @@ class WildBomjeEntryAdapter extends RecyclerView.Adapter<WildBomjeEntryAdapter.B
     public void onBindViewHolder(BomjeViewHolder holder, int position) {
         final WildBomjeEntry bomje = bomjes.get(position);
         if (bomje.bomje.type.equals(BomjeType.ANTON)) {
-            holder.nameView.setText("BOMJE ANTON");
-            holder.imageView.setImageBitmap(resizeMapIcons("bomje_anton",250,250));
+            holder.nameView.setText(R.string.bomje_anton);
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_anton",SCALE_ICON,SCALE_ICON));
         } else if (bomje.bomje.type.equals(BomjeType.DELOVOI)) {
-            holder.nameView.setText("BOMJE DELOVOI");
-            holder.imageView.setImageBitmap(resizeMapIcons("bomje_delovoi",250,250));
+            holder.nameView.setText(R.string.bomje_nikita);
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_delovoi",SCALE_ICON,SCALE_ICON));
         } else if (bomje.bomje.type.equals(BomjeType.DEREVENSKI)) {
-            holder.nameView.setText("DEREVENSKI BOMJE");
-            holder.imageView.setImageBitmap(resizeMapIcons("bomje_derevenski",250,250));
+            holder.nameView.setText(R.string.bomje_vitalya);
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_derevenski",SCALE_ICON,SCALE_ICON));
         } else if (bomje.bomje.type.equals(BomjeType.JIRNIY)) {
-            holder.nameView.setText("JIRNIY BOMJE");
-            holder.imageView.setImageBitmap(resizeMapIcons("bomje_jirniy",250,250));
+            holder.nameView.setText(R.string.bomje_tema);
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_jirniy",SCALE_ICON,SCALE_ICON));
         } else if (bomje.bomje.type.equals(BomjeType.MUTANT)) {
-            holder.nameView.setText("MUTANT BOMJE");
-            holder.imageView.setImageBitmap(resizeMapIcons("bomje_mutant",250,250));
+            holder.nameView.setText(R.string.bomje_triple);
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_mutant",SCALE_ICON,SCALE_ICON));
         } else if (bomje.bomje.type.equals(BomjeType.OPASNI)) {
-            holder.nameView.setText("OPASNY BOMJE");
-            holder.imageView.setImageBitmap(resizeMapIcons("bomje_opasni",250,250));
+            holder.nameView.setText(R.string.bomje_alex);
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_opasni",SCALE_ICON,SCALE_ICON));
         } else if (bomje.bomje.type.equals(BomjeType.S_BORODOY)) {
-            holder.nameView.setText("BOMJE WITH BORODA");
-            holder.imageView.setImageBitmap(resizeMapIcons("bomje_s_borodoy",250,250));
+            holder.nameView.setText(R.string.bomje_misha);
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_s_borodoy",SCALE_ICON,SCALE_ICON));
         } else if (bomje.bomje.type.equals(BomjeType.SEXY)) {
-            holder.nameView.setText("SEXY BOMJE");
-            holder.imageView.setImageBitmap(resizeMapIcons("bomje_sexy",250,250));
+            holder.nameView.setText(R.string.bomje_glotov);
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_sexy",SCALE_ICON,SCALE_ICON));
         } else if (bomje.bomje.type.equals(BomjeType.SOZDATEL)) {
-            holder.nameView.setText("!!!x322xBOMJEx228x!!!");
-            holder.imageView.setImageBitmap(resizeMapIcons("bomje_sozdatel",250,250));
+            holder.nameView.setText(R.string.bomje_creator);
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_sozdatel",SCALE_ICON,SCALE_ICON));
         } else if (bomje.bomje.type.equals(BomjeType.WITH_OGNETUSHITEL)) {
-            holder.nameView.setText("BOMJE WITH OGNETUSHITEL");
-            holder.imageView.setImageBitmap(resizeMapIcons("bomje_with_ognetushitel",250,250));
+            holder.nameView.setText(R.string.bomje_artem);
+            holder.imageView.setImageBitmap(resizeMapIcons("bomje_with_ognetushitel",SCALE_ICON,SCALE_ICON));
         }
         holder.weightView.setText("Weight: " + bomje.bomje.weight);
         holder.heightView.setText("Height: " + bomje.bomje.height);

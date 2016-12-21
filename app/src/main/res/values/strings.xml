@@ -3,4 +3,5 @@
     <string name="title_activity_maps">Map</string>
     <string name="bomje_image_description">bomjeImage</string>
     <string name="show_caught">Bomjes</string>
+    <string name="button_go_catch_bomje">GO CATCH BOMJE</string>
 </resources>
